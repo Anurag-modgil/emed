@@ -19,6 +19,7 @@ import { getUser, logout } from "../../../Redux/Auth/Action";
 import { getCart } from "../../../Redux/Customers/Cart/Action";
 
 
+
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
 }
@@ -32,6 +33,7 @@ const navigation = {
 };
 
 export default function Navigation() {
+  const [query, setQuery] = useState('');
   const [open, setOpen] = useState(false);
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -115,9 +117,9 @@ export default function Navigation() {
                 </div>
                 
               </div>
-              <div >
-                    <SearchBar/>
-                    </div>
+              {/* <div >
+              <SearchBar  />
+                    </div>       there is come error in search component but backend is ready  */  }
               
               <div className="ml-auto flex items-center">
                 <div className="hidden lg:flex lg:flex-1 lg:items-center lg:justify-end lg:space-x-6">

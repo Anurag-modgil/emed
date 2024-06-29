@@ -26,6 +26,7 @@ const Createsellproduct = () => {
     discountPersent: "",
     quantity: "",
     description: "",
+    salt:"",
   });
 
 const dispatch=useDispatch();
@@ -180,6 +181,16 @@ const jwt=localStorage.getItem("jwt")
               rows={3}
               onChange={handleChange}
               value={productData.description}
+            />
+          </Grid>
+          <Grid item xs={12} sm={4}>
+            <TextField
+              fullWidth
+              label="Salt of Medecine"
+              name="salt"
+              value={productData.salt}
+              onChange={handleChange}
+              type="string"
             />
           </Grid>
           <Grid item xs={12} >

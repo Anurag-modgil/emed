@@ -1,5 +1,6 @@
 // productController.js
 const productService = require("../services/product.service.js")
+const Product = require("../models/product.model.js") // Import the Product model
 
 // Create a new product
 async function createProduct(req, res) {
@@ -65,16 +66,58 @@ async function findProductByCategory(req, res) {
   }
 }
 
-// Search products by query
 async function searchProduct(req, res) {
   try {
     const query = req.params.query;
-    const products = await productService.searchProduct(query);
-    res.json(products);
+
+    // Use a regular expression to perform a case-insensitive search
+    const regex = new RegExp(query, 'i');
+
+    // Find products that match the query in the name, description, or category fields
+    const products = await Product.find({
+      $or: [
+        { brand: { $regex: regex } },
+        { description: { $regex: regex } },
+        { title: { $regex: regex } }
+      ]
+    });
+
+    // Sort the products based on the relevance score
+    const sortedProducts = products.sort((a, b) => {
+      const aScore = getRelevanceScore(a, query);
+      const bScore = getRelevanceScore(b, query);
+      return bScore - aScore;
+    });
+
+    return res.json(sortedProducts);
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    return res.status(500).json({ error: err.message });
   }
 }
+
+// Helper function to calculate the relevance score of a product
+function getRelevanceScore(product, query) {
+  const regex = new RegExp(query, 'i');
+  let score = 0;
+
+  // Check if the query matches the product name
+  if (product.title.match(regex)) {
+    score += 3; // Higher weight for name match
+  }
+
+  // Check if the query matches the product description
+  if (product.description.match(regex)) {
+    score += 2; // Medium weight for description match
+  }
+
+  // Check if the query matches the product category
+  if (product.brand.match(regex)) {
+    score += 1; // Lower weight for category match
+  }
+
+  return score;
+}
+
 
 // Get all products with filtering and pagination
 async function getAllProducts(req, res) {

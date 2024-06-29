@@ -16,6 +16,7 @@ import PaymentSuccess from "../customer/components/paymentSuccess/PaymentSuccess
 import { customerTheme } from "../Admin/them/customeThem";
 import HomePageLayout from "../customer/components/homepagelayout/HomePageLayout";
 import Createsellproduct from "../customer/components/sellproduct/createsellproduct";
+import SearchPage from '../customer/pages/search/SearchPage';
 
 const CustomerRoutes = () => {
   const showNavigation = location.pathname !== "*";
@@ -28,6 +29,7 @@ const CustomerRoutes = () => {
               <Route path="/login" element={<Homepage />}></Route>
               <Route path="/register" element={<Homepage />}></Route>
               <Route path="/" element={<Homepage />} />
+              <Route path="/search/:query" element={<SearchPage />} />
               <Route path="/Labtest" element={<Labtest />} />
               <Route path="/healthcare" element={<Healthcare />} />
               <Route path="/sell" element={<Createsellproduct />} />

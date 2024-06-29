@@ -73,7 +73,7 @@ const Footer = () => {
           &copy; 2024 My Company. All rights reserved.
         </Typography>
         <Typography variant="body2" component="p" align="center">
-          Made with love by jashan.
+          Made with love by Riya & Paras.
         </Typography>
       </Grid>
     </Grid>

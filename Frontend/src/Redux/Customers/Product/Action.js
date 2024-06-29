@@ -16,16 +16,17 @@ import {
   DELETE_PRODUCT_REQUEST,
   DELETE_PRODUCT_SUCCESS,
   DELETE_PRODUCT_FAILURE,
+  FIND_PRODUCTS_BY_SALT_REQUEST,
+  FIND_PRODUCTS_BY_SALT_SUCCESS,
+  FIND_PRODUCTS_BY_SALT_FAILURE,
+  SEARCH_PRODUCTS_REQUEST,
+  SEARCH_PRODUCTS_SUCCESS,
+  SEARCH_PRODUCTS_FAILURE
 } from "./ActionType";
 import api, { API_BASE_URL } from "../../../config/api";
 
 export const findProducts = (reqData) => async (dispatch) => {
-  const {
-    minPrice,
-    maxPrice,
-    minDiscount,
-    stock,
-  } = reqData;
+  const { minPrice, maxPrice, minDiscount, stock } = reqData;
 
   try {
     dispatch({ type: FIND_PRODUCTS_BY_CATEGORY_REQUEST });
@@ -34,7 +35,6 @@ export const findProducts = (reqData) => async (dispatch) => {
       `/api/products?minPrice=${minPrice}&maxPrice=${maxPrice}&minDiscount=${minDiscount}&stock=${stock}`
     );
 
-    console.log("get product by category - ", data);
     dispatch({
       type: FIND_PRODUCTS_BY_CATEGORY_SUCCESS,
       payload: data,
@@ -49,6 +49,37 @@ export const findProducts = (reqData) => async (dispatch) => {
     });
   }
 };
+export const searchProducts = (query) => async (dispatch) => {
+  try {
+    dispatch({ type: SEARCH_PRODUCTS_REQUEST });
+
+    const { data } = await api.get(`/api/products/search/${query}`);
+
+    dispatch({
+      type: SEARCH_PRODUCTS_SUCCESS,
+      payload: data
+    });
+  } catch (error) {
+    dispatch({
+      type: SEARCH_PRODUCTS_FAILURE,
+      payload:
+        error.response && error.response.data.message
+          ? error.response.data.message
+          : error.message
+    });
+  }
+};
+export const findProductsBySalt = (salt) => async (dispatch) => {
+  try {
+    const response = await fetch(`/api/products/salt/${salt}`);
+    const data = await response.json();
+    dispatch({ type: "FETCH_PRODUCTS_BY_SALT_SUCCESS", payload: data });
+  } catch (error) {
+    dispatch({ type: "FETCH_PRODUCTS_BY_SALT_FAILURE", error });
+    throw error;
+  }
+};
+
 
 export const findProductById = (reqData) => async (dispatch) => {
   try {

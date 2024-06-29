@@ -8,6 +8,7 @@ import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { findProductById } from "../../../Redux/Customers/Product/Action";
 import { addItemToCart } from "../../../Redux/Customers/Cart/Action";
+import SimilarProductCarousel from "../../components/SimilarProductCrousel/similarproduct";
 
 const product = {
   name: "Basic Tee 6-Pack",
@@ -45,11 +46,17 @@ const product = {
   description:
     'The Basic Tee 6-Pack allows you to fully express your vibrant personality with three grayscale options. Feeling adventurous? Put on a heather gray tee. Want to be a trendsetter? Try our exclusive colorway: "Black". Need to add an extra pop of color to your outfit? Our white tee has you covered.',
   highlights: [
-    "Hand cut and sewn locally",
-    "Dyed with our proprietary colors",
-    "Pre-washed & pre-shrunk",
-    "Ultra-soft 100% cotton",
+    "Relieves mild to moderate pain effectively",
+"Reduces fever swiftly",
+"Gentle on the stomach",
+"Suitable for all ages",
+"Widely available over-the-counter",
+"Affordable and cost-effective",
+"Minimal drug interactions",
+"Low risk of allergic reactions"
   ],
+  salt:
+  'helloo',
   details:
     'The 6-Pack includes two black, two white, and two heather gray Basic Tees. Sign up for our subscription service and be the first to get new, exciting colors, like our upcoming "Charcoal Gray" limited release.',
 };
@@ -130,8 +137,8 @@ export default function ProductDetails() {
         {/* product details */}
         <section className="grid grid-cols-1 gap-x-8 gap-y-10 lg:grid-cols-2 px-4 pt-10">
           {/* Image gallery */}
-          <div className="flex flex-col items-center ">
-            <div className=" overflow-hidden rounded-lg max-w-[30rem] max-h-[35rem]">
+          <div className="flex flex-col items-center max-h-[30rem] ">
+            <div className=" overflow-hidden rounded-lg max-w-[30rem] max-h-[30rem]">
               <img
                 src={customersProduct.product?.imageUrl}
                 alt={product.images[0].alt}
@@ -141,8 +148,8 @@ export default function ProductDetails() {
           </div>
 
           {/* Product info */}
-          <div className="lg:col-span-1 mx-auto max-w-2xl px-4 pb-16 sm:px-6  lg:max-w-7xl  lg:px-8 lg:pb-24">
-            <div className="lg:col-span-2">
+          <div className="lg:col-span-1 mx-auto max-w-2xl px-4 pb-16 sm:px-6  lg:max-w-7xl  lg:px-8 lg:pb-24" style={{ maxHeight: '500px', overflowY: 'auto' }}>
+            <div className="lg:col-span-2" >
               <h1 className="text-lg lg:text-xl font-semibold tracking-tight text-gray-900  ">
                 {customersProduct.product?.brand}
               </h1>
@@ -192,7 +199,7 @@ export default function ProductDetails() {
 
               <div className="mt-10">
                 <h3 className="text-sm font-medium text-gray-900">
-                  Highlights
+                  Benifits
                 </h3>
 
                 <div className="mt-4">
@@ -213,9 +220,21 @@ export default function ProductDetails() {
                   <p className="text-sm text-gray-600">{product.details}</p>
                 </div>
               </div>
+              
+            
             </div>
+          
           </div>
+         
         </section>
+        <div className="mt-10">
+                <h2 className="text-lg lg:text-xl font-semibold tracking-tight text-gray-900 ">Product with same salt</h2>
+
+                <div className="mt-4 space-y-6">
+                  <p className="text-sm text-gray-600">{customersProduct.product?.salt}</p>
+                </div>
+                <SimilarProductCarousel salt= {customersProduct.product?.salt} />
+               </div>
       </div>
     </div>
   );

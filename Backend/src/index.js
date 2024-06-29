@@ -19,6 +19,7 @@ app.use("/api/users",userRouter)
 const productRouter=require("./routes/product.routes.js");
 app.use("/api/products",productRouter);
 
+
 const adminProductRouter=require("./routes/product.admin.routes.js");
 app.use("/api/admin/products",adminProductRouter);
 

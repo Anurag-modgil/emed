@@ -1,5 +1,7 @@
 // Create a new product
+// import findBySalt from "../models/product.model"
 const Product = require("../models/product.model");
+
 
 // Create a new product
 async function createProduct(reqData) {
@@ -12,6 +14,7 @@ async function createProduct(reqData) {
     brand: reqData.brand,
     price: reqData.price,
     quantity: reqData.quantity,
+    salt:reqData.salt,
   });
 
   const savedProduct = await product.save();
@@ -39,15 +42,34 @@ async function updateProduct(productId, reqData) {
 }
 
 // Find a product by ID
-async function findProductById(id) {
-  const product = await Product.findById(id).exec();
+const findProductById = async (id) => {
+  try {
+    const product = await Product.findById(id).exec();
 
-  if (!product) {
-    throw new Error("Product not found with id " + id);
+    if (!product) {
+      throw new Error("Product not found with id " + id);
+    }
+
+    return product;
+  } catch (error) {
+    throw new Error("Error finding product by id: " + error.message);
   }
-  return product;
-}
+};
+const findProductsBySalt = async (salt) => {
+  try {
+    const products = await Product.findBySalt({ salt }).exec();
+    
 
+    if (!products || products.length === 0) {
+      throw new Error("No products found with salt " + salt);
+     
+    }
+
+    return products;
+  } catch (error) {
+    throw new Error("Error finding products by salt: " + error.message);
+  }
+};
 // Get all products with filtering and pagination
 async function getAllProducts(reqQuery) {
   let {
@@ -110,5 +132,6 @@ module.exports = {
   updateProduct,
   getAllProducts,
   findProductById,
+  findProductsBySalt,
   createMultipleProduct,
 };
