@@ -7,7 +7,7 @@ import LoginUserForm from "./Login";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { Alert, Snackbar } from "@mui/material";
-
+import OTPModal from "../otp/OTPModal";
 const style = {
   position: "absolute",
   top: "50%",
@@ -18,38 +18,29 @@ const style = {
   boxShadow: 24,
   p: 4,
 };
-
 export default function AuthModal({ handleClose, open }) {
   const location = useLocation();
   const { auth } = useSelector((store) => store);
-  const navigate=useNavigate()
-  useEffect(() => {
-    if (auth.user){
-       handleClose();
-       if(auth.user?.role==="ADMIN"){
-        navigate('/admin')
-       }
-      }
-  }, [auth.user]);
+  const navigate = useNavigate();
+  const [isModalOpen, setIsModalOpen] = useState(false); // useEffect(() => { //   if (auth.user){ //     //  handleClose(); //   // setIsModalOpen(true); //      if(auth.user?.role==="ADMIN"){ //       navigate('/admin') //      } //     } // }, [auth.user]); // const openModal = () => { //   setIsModalOpen(true); // }; // const closeModal = () => { //   setIsModalOpen(false); // }; // const dependancy = async()=>{ //   console.log("back from child") // }
+  // console.log('isModalOpen', isModalOpen)
   return (
     <>
-    <Modal
-      open={open}
-      onClose={handleClose}
-      aria-labelledby="modal-modal-title"
-      aria-describedby="modal-modal-description"
-      size="large"
-    >
-      <Box className="rounded-md" sx={style}>
-        {location.pathname === "/login" ? (
-          <LoginUserForm />
-        ) : (
-          <RegisterUserForm />
-        )}
-      </Box>
-    </Modal>
-    
+      <Modal
+        open={open}
+        onClose={handleClose} // dependies = {dependancy}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+        size="large"
+      >
+        <Box className="rounded-md" sx={style}>
+          {location.pathname === "/login" ? (
+            <LoginUserForm handleClose={handleClose} />
+          ) : (
+            <RegisterUserForm />
+          )}
+        </Box>
+      </Modal>
     </>
-    
   );
 }

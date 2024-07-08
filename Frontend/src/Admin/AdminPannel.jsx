@@ -17,7 +17,7 @@ import ListItemIcon from "@mui/material/ListItemIcon";
 import { lightTheme} from "./them/customeThem";
 import AdminNavbar from "./Navigation/AdminNavbar";
 import Dashboard from "./Views/Admin";
-import { Route, Routes, useNavigate } from "react-router-dom";
+import { Route, Routes, useLocation, useNavigate } from "react-router-dom";
 import DemoAdmin from "./Views/DemoAdmin";
 import CreateProductForm from "./componets/createProduct/CreateProductFrom";
 import "./AdminPannel.css";
@@ -47,6 +47,7 @@ export default function AdminPannel() {
   const [sideBarVisible, setSideBarVisible] = React.useState(false);
   const navigate=useNavigate();
   const dispatch=useDispatch()
+  const location = useLocation();
   const {auth}=useSelector(store=>store);
 
   const handleLogout = () => {
@@ -57,11 +58,22 @@ export default function AdminPannel() {
   };
 
   const jwt = localStorage.getItem("jwt");
+  const role = localStorage.getItem("role")
 
   useEffect(() => {
-    if (jwt) {
+    // console.log("location",location.pathname);
+    if(location.pathname!=="/"){
+      // console.log("location...");
+      // jwt + role
+      if (jwt && role=='ADMIN') {
+      // console.log("location... in jwt if");
+      // if()
       dispatch(getUser(jwt));
+    } else {
+      // console.log("location... in jwt else");
+      navigate("/")
     }
+  }
   }, [jwt]);
 
   const drawer = (

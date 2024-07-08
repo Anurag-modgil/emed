@@ -4,21 +4,24 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 const SearchBar = ({ onSearch }) => {
+  console.log('onSearch', onSearch)
   const navigate = useNavigate();
   const [query, setQuery] = useState(""); // Initialize query state to an empty string
 
-  const handleSearch = (searchQuery) => {
-    console.log(`Searching for ${searchQuery}`);
+
+  const handleSearch = () => {
+    // console.log("@@@@@")
+    // console.log(`Searching for ${query}`);
+    navigate(`/search/${query}`);
     onSearch(searchQuery);
-    navigate(`/search/${searchQuery}`);
   };
   // Debounce the handleSearch function with a 300ms delay
-  const debouncedSearch = debounce(handleSearch, 300);
+  // const debouncedSearch = debounce(handleSearch, 300);
 
   const handleInputChange = (e) => {
     const newQuery = e.target.value;
     setQuery(newQuery);
-    debouncedSearch(newQuery);
+    // debouncedSearch(newQuery);
   };
 
   return (
@@ -32,7 +35,7 @@ const SearchBar = ({ onSearch }) => {
             <div className=" flex items-center px-2">
               <button type="submit">
                 <figure className=" text-slate-500 bg-transparent">
-                  <BsSearch />
+                   <BsSearch onClick={handleSearch}/>
                 </figure>
               </button>
             </div>
