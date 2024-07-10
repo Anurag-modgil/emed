@@ -1,7 +1,7 @@
 
 import axios from 'axios';
 const DEPLOYED='https://pear-poised-hen.cyclic.app/'
-const LOCALHOST='http://13.201.47.20:5454'
+const LOCALHOST='https://emed-sever.onrender.com'
 
 export const API_BASE_URL = LOCALHOST;
 
