@@ -20,22 +20,25 @@ const userSchema = new mongoose.Schema({
   },
   role: {
     type: String,
-    required:true,
-    default:"CUSTOMER"
+    required: true,
+    default: "CUSTOMER"
+  },
+  active: {
+    type: String
   },
   mobile: {
     type: String,
   },
   address: [
     {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "addresses",
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "addresses",
     },
-  ], 
+  ],
   paymentInformation: [
     {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "payment_information",
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "payment_information",
     },
   ],
   createdAt: {

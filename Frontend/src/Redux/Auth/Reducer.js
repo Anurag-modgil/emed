@@ -9,12 +9,19 @@ import {
   GET_USER_SUCCESS,
   GET_USER_FAILURE,
   LOGOUT,
+  OTP_REQUEST,
+  OTP_SUCCESS,
+  OTP_FAILURE,
+  USER_INFO_RESET,
+  USER_INFO
 } from "./ActionTypes";
 
 const initialState = {
   user: null,
   isLoading: false,
   error: null,
+  otp: null,
+  timer: 0
 };
 
 const authReducer = (state = initialState, action) => {
@@ -35,9 +42,19 @@ const authReducer = (state = initialState, action) => {
       return { ...state, isLoading: false, user: action.payload };
     case GET_USER_FAILURE:
       return { ...state, isLoading: false, error: action.payload };
-      case LOGOUT:
-        localStorage.removeItem("jwt");
-        return { ...state, jwt: null, user: null };
+    case LOGOUT:
+      localStorage.removeItem("jwt");
+      return { ...state, jwt: null, user: null };
+    case USER_INFO_RESET:
+      return initialState.timer
+    case USER_INFO:
+      return { ...state, timer: action.payload.timer }
+    case OTP_REQUEST:
+      return { ...state, isLoading: true, error: null }
+    case OTP_SUCCESS:
+      return { ...state, isLoading: false, otp: action.payload }
+    case OTP_FAILURE:
+      return { ...state, isLoading: false, error: action.payload }
     default:
       return state;
   }
