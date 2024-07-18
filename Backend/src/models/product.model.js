@@ -27,6 +27,12 @@ const productSchema = new mongoose.Schema({
   brand: {
     type: String,
   },
+  category: {
+    type: String,
+  },
+  stock: {
+    type: String,
+  },
   imageUrl: {
     type: String,
   },

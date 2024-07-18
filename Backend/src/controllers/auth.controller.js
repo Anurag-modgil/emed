@@ -92,17 +92,11 @@ const otpValidaton = async (req, res) => {
                     msg: 'OTP Expired'
                 });
             } else if (otp_parse === otp_date?.otp && seconds_difference <= 60) {
-                // const encrypt_data = result[0][0];
-                // const encryptedMetaValue = CryptoJS.AES.encrypt(JSON.stringify(encrypt_data)
-                //   ,process.env.ACCESS_TOKEN);
                 const jwt = jwtProvider.generateToken(getotp._id);
                 return res.status(200).send({
                     msg: 'You are Logged In',
                     jwt,
                     role: getotp.role
-                    //   token,
-                    //   roles: roleName,
-                    //   user: encryptedMetaValue.toString(),
                 });
             } else {
                 return res.status(200).send({

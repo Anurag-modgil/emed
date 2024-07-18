@@ -16,7 +16,6 @@ export const ReplaceData = (content, object) => content.replace(
 
 
 export const sendOtpEmail = async (email, template, Emailreplacedobject) => {
-    // console.log('email >>>>>', email)
     try {
         let ReplacedContent = template
             ? ReplaceData(template?.emailTemplate, Emailreplacedobject)
@@ -26,7 +25,6 @@ export const sendOtpEmail = async (email, template, Emailreplacedobject) => {
             ReplacedContent,
             template.subject,
         );
-        // console.log('emailResponse', emailResponse)
         return emailResponse;
     } catch { }
 }

@@ -8,13 +8,15 @@ async function createProduct(reqData) {
   const product = new Product({
     title: reqData.title,
     description: reqData.description,
+    category: reqData.category,
     discountedPrice: reqData.discountedPrice,
-    discountPersent: reqData.discountPersent,
+    discountPersent: reqData.discountPercent,
     imageUrl: reqData.imageUrl,
     brand: reqData.brand,
     price: reqData.price,
     quantity: reqData.quantity,
-    salt:reqData.salt,
+    salt: reqData.salt,
+    stock: reqData.stock
   });
 
   const savedProduct = await product.save();
@@ -58,11 +60,11 @@ const findProductById = async (id) => {
 const findProductsBySalt = async (salt) => {
   try {
     const products = await Product.findBySalt({ salt }).exec();
-    
+
 
     if (!products || products.length === 0) {
       throw new Error("No products found with salt " + salt);
-     
+
     }
 
     return products;
@@ -72,51 +74,69 @@ const findProductsBySalt = async (salt) => {
 };
 // Get all products with filtering and pagination
 async function getAllProducts(reqQuery) {
-  let {
-    minPrice,
-    maxPrice,
-    minDiscount,
-    sort,
-    stock,
-    pageNumber,
-    pageSize,
-  } = reqQuery;
-  (pageSize = pageSize || 25), (pageNumber = pageNumber || 1);
-  let query = Product.find();
+  try {
+    let {
+      minPrice,
+      maxPrice,
+      minDiscount,
+      sort,
+      stock,
+      page,
+      pageSize,
+      category,
+      search
+    } = reqQuery;
 
-  if (minPrice && maxPrice) {
-    query = query.where("discountedPrice").gte(minPrice).lte(maxPrice);
-  }
+    pageSize = parseInt(pageSize) || 20;
+    let pageNumber = parseInt(page) || 1;
 
-  if (minDiscount) {
-    query = query.where("discountPersent").gt(minDiscount);
-  }
+    let query = Product.find();
+    if (minPrice && maxPrice) {
+      query = query.where("discountedPrice").gte(minPrice).lte(maxPrice);
 
-  if (stock) {
-    if (stock === "in_stock") {
-      query = query.where("quantity").gt(0);
-    } else if (stock === "out_of_stock") {
-      query = query.where("quantity").lte(0);
     }
+
+    if (minDiscount) {
+      query = query.where("discountPersent").gt(minDiscount);
+    }
+    if (category) {
+      query = query.where("category").equals(category);
+    }
+    if (search) {
+      const regex = new RegExp(search, 'i');
+      query = query.or([
+        { brand: { $regex: regex } },
+        { description: { $regex: regex } },
+        { title: { $regex: regex } }
+      ]);
+    }
+
+    if (stock) {
+      if (stock === "in_stock") {
+        query = query.where("quantity").gt(0);
+      } else if (stock === "out_of_stock") {
+        query = query.where("quantity").lte(0);
+      }
+    }
+
+    if (sort) {
+      const sortDirection = sort === "price_high" ? -1 : 1;
+      query = query.sort({ discountedPrice: sortDirection });
+    }
+
+    const totalProducts = await Product.countDocuments(query.getFilter());
+    // Apply pagination
+    const skip = (pageNumber - 1) * pageSize;
+    query = query.skip(skip).limit(pageSize);
+    console.log('query???', query)
+    const products = await query.exec();
+    const totalPages = Math.ceil(totalProducts / pageSize);
+
+    return { content: products, currentPage: pageNumber, totalPages: totalPages };
+  } catch (error) {
+    console.log('error', error)
   }
 
-  if (sort) {
-    const sortDirection = sort === "price_high" ? -1 : 1;
-    query = query.sort({ discountedPrice: sortDirection });
-  }
-
-  // Apply pagination
-  const totalProducts = await Product.countDocuments(query);
-
-  const skip = (pageNumber - 1) * pageSize;
-
-  query = query.skip(skip).limit(pageSize);
-
-  const products = await query.exec();
-
-  const totalPages = Math.ceil(totalProducts / pageSize);
-
-  return { content: products, currentPage: pageNumber, totalPages: totalPages };
 }
 
 

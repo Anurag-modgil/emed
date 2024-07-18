@@ -25,6 +25,7 @@ async function deleteProduct(req, res) {
 
 // Update a product by ID
 async function updateProduct(req, res) {
+  const productId = req.params.id;
   try {
     const productId = req.params.id;
     const product = await productService.updateProduct(productId, req.body);
@@ -122,16 +123,14 @@ function getRelevanceScore(product, query) {
 // Get all products with filtering and pagination
 async function getAllProducts(req, res) {
   try {
-
     const products = await productService.getAllProducts(req.query);
-
     return res.status(200).send(products);
   } catch (err) {
     return res.status(500).json({ error: err.message });
   }
 }
 
-const createMultipleProduct= async (req, res) => {
+const createMultipleProduct = async (req, res) => {
   try {
     await productService.createMultipleProduct(req.body)
     res

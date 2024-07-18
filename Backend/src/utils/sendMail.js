@@ -6,6 +6,9 @@ import { createTransport } from 'nodemailer';
  * @param emailSubject Subject of email to be  send.
  * @returns messageId
  */
+const dotenv = require('dotenv');
+dotenv.config();
+
 const sendEmail = async (emailTo, email, emailSubject, Attachment = null,) => {
     try {
         const host = process.env.emailhost
