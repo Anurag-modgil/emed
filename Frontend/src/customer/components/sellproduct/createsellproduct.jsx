@@ -14,9 +14,7 @@ import { Fragment } from "react";
 import "./CreateProductForm.css";
 import { useDispatch } from "react-redux";
 
-
 const Createsellproduct = () => {
-  
   const [productData, setProductData] = useState({
     imageUrl: "",
     brand: "",
@@ -26,13 +24,12 @@ const Createsellproduct = () => {
     discountPersent: "",
     quantity: "",
     description: "",
-    salt:"",
+    salt: "",
   });
 
-const dispatch=useDispatch();
+  const dispatch = useDispatch();
 
-const jwt=localStorage.getItem("jwt")
-
+  const jwt = localStorage.getItem("jwt");
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -42,52 +39,10 @@ const jwt=localStorage.getItem("jwt")
     }));
   };
 
-  // const handleSizeChange = (e, index) => {
-  //   let { name, value } = e.target;
-  //   name==="size_quantity"?name="quantity":name=e.target.name;
-
-  //   const sizes = [...productData.size];
-  //   sizes[index][name] = value;
-  //   setProductData((prevState) => ({
-  //     ...prevState,
-  //     size: sizes,
-  //   }));
-  // };
-
-  // const handleAddSize = () => {
-  //   const sizes = [...productData.size];
-  //   sizes.push({ name: "", quantity: "" });
-  //   setProductData((prevState) => ({
-  //     ...prevState,
-  //     size: sizes,
-  //   }));
-  // };
-
-  // const handleRemoveSize = (index) => {
-  //   const sizes = [...productData.size];
-  //   sizes.splice(index, 1);
-  //   setProductData((prevState) => ({
-  //     ...prevState,
-  //     size: sizes,
-  //   }));
-  // };
-
   const handleSubmit = (e) => {
     e.preventDefault();
-    dispatch(createProduc({data:productData,jwt}))
-    console.log(productData);
-    console.log(jwt);
+    dispatch(createProduc({ data: productData, jwt }));
   };
-
-  // const handleAddProducts=(data)=>{
-  //   for(let item of data){
-  //     const productsData={
-  //       data:item,
-  //       jwt,
-  //     }
-  //     dispatch(createProduct(productsData))
-  //   }
-  // }
 
   return (
     <div className="createProductContainer ">
@@ -121,7 +76,7 @@ const jwt=localStorage.getItem("jwt")
               onChange={handleChange}
             />
           </Grid>
-        
+
           <Grid item xs={12} sm={6}>
             <TextField
               fullWidth
@@ -193,7 +148,7 @@ const jwt=localStorage.getItem("jwt")
               type="string"
             />
           </Grid>
-          <Grid item xs={12} >
+          <Grid item xs={12}>
             <Button
               variant="contained"
               sx={{ p: 1.8 }}

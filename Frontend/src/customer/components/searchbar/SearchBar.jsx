@@ -1,19 +1,17 @@
 import { BsSearch } from "react-icons/bs";
 import debounce from "lodash.debounce";
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 
 const SearchBar = ({ onSearch }) => {
-  console.log('onSearch', onSearch)
+  const location = useLocation();
+  const searchParams = new URLSearchParams(location.search);
   const navigate = useNavigate();
-  const [query, setQuery] = useState(""); // Initialize query state to an empty string
-
+  const [query, setQuery] = useState("");
 
   const handleSearch = () => {
-    // console.log("@@@@@")
-    // console.log(`Searching for ${query}`);
+    searchParams.set("search", query);
     navigate(`/search/${query}`);
-    onSearch(searchQuery);
   };
   // Debounce the handleSearch function with a 300ms delay
   // const debouncedSearch = debounce(handleSearch, 300);
@@ -27,15 +25,12 @@ const SearchBar = ({ onSearch }) => {
   return (
     <>
       <div className="ml-40 mr-1 w-[80%] sm:w-[90%] relative flex flex-col items-center search-container">
-        <form
-          method=""
-          className="bg-[#f0f5ff] relative w-full rounded-md "
-        >
+        <form method="" className="bg-[#f0f5ff] relative w-full rounded-md ">
           <div className="flex items-center h-[40px] ">
             <div className=" flex items-center px-2">
               <button type="submit">
                 <figure className=" text-slate-500 bg-transparent">
-                   <BsSearch onClick={handleSearch}/>
+                  <BsSearch onClick={handleSearch} />
                 </figure>
               </button>
             </div>
@@ -46,7 +41,6 @@ const SearchBar = ({ onSearch }) => {
                 placeholder="Search for Products, Brands and More"
                 autoComplete="off"
                 className=" bg-transparent w-[100%] border-none outline-none text-[14px] md:text-[16px] p-1 placeholder-gray-600 "
-                
                 onChange={handleInputChange}
                 value={query}
               />

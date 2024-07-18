@@ -5,18 +5,22 @@ import CustomerRoutes from "./Routers/CustomerRoute";
 import ProductDetails from "./customer/pages/Home/ProductDetails";
 import Cart from "./customer/components/cart/Cart";
 import AdminPannel from "./Admin/AdminPannel";
-
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 function App() {
-  const isAdmin=true;
+  const isAdmin = true;
   return (
-    <Router>
-      <div>
-        <Routes>
-          <Route path="/*" element={<CustomerRoutes />} />
-          <Route path="/admin/*" element={<AdminPannel />} />
-        </Routes>
-      </div>
-    </Router>
+    <div>
+      <Router>
+        <div>
+          <Routes>
+            <Route path="/*" element={<CustomerRoutes />} />
+            <Route path="/admin/*" element={<AdminPannel />} />
+          </Routes>
+        </div>
+      </Router>
+      <ToastContainer limit={1} />
+    </div>
   );
 }
 

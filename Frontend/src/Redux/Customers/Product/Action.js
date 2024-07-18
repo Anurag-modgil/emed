@@ -26,13 +26,21 @@ import {
 import api, { API_BASE_URL } from "../../../config/api";
 
 export const findProducts = (reqData) => async (dispatch) => {
-  const { minPrice, maxPrice, minDiscount, stock } = reqData;
-
+  const { minPrice, maxPrice, minDiscount, stock, category, search, sort, pageNumber, pageSize } = reqData;
+  console.log('search search search', search);
+  let categoryCondition = ''
+  let searchParam = ''
+  if (category !== '' && category !== 'all' && category !== null && category !== undefined) {
+    categoryCondition = `&category=${category}`
+  }
+  if (search !== '' && search !== null && search !== undefined) {
+    searchParam = `&search=${search}`
+  }
   try {
     dispatch({ type: FIND_PRODUCTS_BY_CATEGORY_REQUEST });
 
     const { data } = await api.get(
-      `/api/products?minPrice=${minPrice}&maxPrice=${maxPrice}&minDiscount=${minDiscount}&stock=${stock}`
+      `/api/products?minPrice=${minPrice}&maxPrice=${maxPrice}&page=${pageNumber}&pageSize=${pageSize}&minDiscount=${minDiscount}&stock=${stock}${searchParam}${categoryCondition}`
     );
 
     dispatch({
@@ -54,7 +62,7 @@ export const searchProducts = (query) => async (dispatch) => {
     dispatch({ type: SEARCH_PRODUCTS_REQUEST });
 
     const { data } = await api.get(`/api/products/search/${query}`);
-
+    // console.log("search products>>", data)
     dispatch({
       type: SEARCH_PRODUCTS_SUCCESS,
       payload: data
@@ -118,6 +126,7 @@ export const createProduct = (product) => async (dispatch) => {
     });
 
     console.log("created product ", data);
+    return data
   } catch (error) {
     dispatch({
       type: CREATE_PRODUCT_FAILURE,
@@ -129,19 +138,21 @@ export const createProduct = (product) => async (dispatch) => {
   }
 };
 
-export const updateProduct = (product) => async (dispatch) => {
+export const updateProduct = (productId, productData) => async (dispatch) => {
+  // console.log("action product", productData)
   try {
     dispatch({ type: UPDATE_PRODUCT_REQUEST });
 
     const { data } = await api.put(
-      `${API_BASE_URL}/api/admin/products/${product.productId}`,
-      product
+      `${API_BASE_URL}/api/admin/products/${productId}`,
+      productData
     );
-console.log("update product ",data)
+    // console.log("update product ",data)
     dispatch({
       type: UPDATE_PRODUCT_SUCCESS,
       payload: data,
     });
+    return data;
   } catch (error) {
     dispatch({
       type: UPDATE_PRODUCT_FAILURE,
@@ -154,22 +165,22 @@ console.log("update product ",data)
 };
 
 export const deleteProduct = (productId) => async (dispatch) => {
-  console.log("delete product action",productId)
+  console.log("delete product action", productId)
   try {
     dispatch({ type: DELETE_PRODUCT_REQUEST });
 
-    let {data}=await api.delete(`/api/admin/products/${productId}`);
+    let { data } = await api.delete(`/api/admin/products/${productId}`);
 
-    console.log("delete product ",data)
+    console.log("delete product ", data)
 
     dispatch({
       type: DELETE_PRODUCT_SUCCESS,
       payload: productId,
     });
 
-    console.log("product delte ",data)
+    console.log("product delte ", data)
   } catch (error) {
-    console.log("catch error ",error)
+    console.log("catch error ", error)
     dispatch({
       type: DELETE_PRODUCT_FAILURE,
       payload:

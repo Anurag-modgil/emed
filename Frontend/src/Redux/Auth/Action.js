@@ -28,7 +28,6 @@ export const register = userData => async dispatch => {
     const response = await axios.post(`${API_BASE_URL}/auth/signup`, userData);
     const user = response.data;
     if (user.jwt) {
-      notify('success', 'OTP has been sent to your email.')
       sessionStorage.setItem('userEmail', JSON.stringify(userData.email));
       const data = { email: userData.email }
       const otpData = await axios.post(`${API_BASE_URL}/auth/signin/getotp`, data)
@@ -40,6 +39,7 @@ export const register = userData => async dispatch => {
             timer: 59,
           },
         });
+
       }
       // Now it will show the otp pop
     }
@@ -60,12 +60,10 @@ export const login = userData => async dispatch => {
   try {
     const response = await axios.post(`${API_BASE_URL}/auth/signin`, userData);
     const user = response.data;
-    console.log('user', user)
     if (user.jwt) {
       sessionStorage.setItem('userEmail', JSON.stringify(userData.email));
       const data = { email: userData.email }
       const otpData = await axios.post(`${API_BASE_URL}/auth/signin/getotp`, data)
-      console.log('otpData', otpData)
       if (otpData?.data?.msg ===
         "OTP mail has been sent to your email.") {
         dispatch({
@@ -75,13 +73,10 @@ export const login = userData => async dispatch => {
           },
         });
       }
-      // Now it will show the otp pop
     }
     // if(user.jwt) localStorage.setItem("jwt",user.jwt)
-    console.log("login ", user)
     dispatch(loginSuccess(user));
   } catch (error) {
-    console.log("error in loginn", error)
     dispatch(loginFailure(error.message));
   }
 };
@@ -100,7 +95,7 @@ export const getUser = (token) => {
       });
       const user = response.data;
       dispatch({ type: GET_USER_SUCCESS, payload: user });
-      console.log("req User ", user)
+
     } catch (error) {
       const errorMessage = error.message;
       dispatch({ type: GET_USER_FAILURE, payload: errorMessage });
@@ -124,8 +119,15 @@ export const otpVarify = (userData) => async dispatch => {
   dispatch(otpRequest())
   try {
     const response = await axios.post(`${API_BASE_URL}/auth/signin/otpvalidation`, userData)
-    console.log('response', response)
     if (response) {
+      if (response?.data?.msg === "You are Logged In") {
+        notify("success", "You are Logged in")
+      }
+      else if (response?.data?.msg === "OTP Expired") {
+        notify("error", "One-Time-Password Expired")
+      } else {
+        notify("error", "Incorrect One-Time-Password");
+      }
       return response;
     }
   } catch (error) {

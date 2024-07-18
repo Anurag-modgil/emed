@@ -1,12 +1,8 @@
 import axios from "axios";
-
 import {
-  FIND_PRODUCTS_BY_CATEGORY_REQUEST,
-  FIND_PRODUCTS_BY_CATEGORY_SUCCESS,
-  FIND_PRODUCTS_BY_CATEGORY_FAILURE,
-  FIND_PRODUCT_BY_ID_REQUEST,
-  FIND_PRODUCT_BY_ID_SUCCESS,
-  FIND_PRODUCT_BY_ID_FAILURE,
+  GET_PRODUCTS_REQUEST,
+  GET_PRODUCTS_SUCCESS,
+  GET_PRODUCTS_FAILURE,
   CREATE_PRODUCT_REQUEST,
   CREATE_PRODUCT_SUCCESS,
   CREATE_PRODUCT_FAILURE,
@@ -16,85 +12,22 @@ import {
   DELETE_PRODUCT_REQUEST,
   DELETE_PRODUCT_SUCCESS,
   DELETE_PRODUCT_FAILURE,
-  FIND_PRODUCTS_BY_SALT_REQUEST,
-  FIND_PRODUCTS_BY_SALT_SUCCESS,
-  FIND_PRODUCTS_BY_SALT_FAILURE,
-  SEARCH_PRODUCTS_REQUEST,
-  SEARCH_PRODUCTS_SUCCESS,
-  SEARCH_PRODUCTS_FAILURE
 } from "./ActionType";
 import api, { API_BASE_URL } from "../../../config/api";
 
-export const findProducts = (reqData) => async (dispatch) => {
-  const { minPrice, maxPrice, minDiscount, stock } = reqData;
-
+export const getProducts = () => async (dispatch) => {
   try {
-    dispatch({ type: FIND_PRODUCTS_BY_CATEGORY_REQUEST });
+    dispatch({ type: GET_PRODUCTS_REQUEST });
 
-    const { data } = await api.get(
-      `/api/products?minPrice=${minPrice}&maxPrice=${maxPrice}&minDiscount=${minDiscount}&stock=${stock}`
-    );
+    const { data } = await api.get(`${API_BASE_URL}/api/admin/products/`);
 
     dispatch({
-      type: FIND_PRODUCTS_BY_CATEGORY_SUCCESS,
+      type: GET_PRODUCTS_SUCCESS,
       payload: data,
     });
   } catch (error) {
     dispatch({
-      type: FIND_PRODUCTS_BY_CATEGORY_FAILURE,
-      payload:
-        error.response && error.response.data.message
-          ? error.response.data.message
-          : error.message,
-    });
-  }
-};
-export const searchProducts = (query) => async (dispatch) => {
-  try {
-    dispatch({ type: SEARCH_PRODUCTS_REQUEST });
-
-    const { data } = await api.get(`/api/products/search/${query}`);
-
-    dispatch({
-      type: SEARCH_PRODUCTS_SUCCESS,
-      payload: data
-    });
-  } catch (error) {
-    dispatch({
-      type: SEARCH_PRODUCTS_FAILURE,
-      payload:
-        error.response && error.response.data.message
-          ? error.response.data.message
-          : error.message
-    });
-  }
-};
-export const findProductsBySalt = (salt) => async (dispatch) => {
-  try {
-    const response = await fetch(`/api/products/salt/${salt}`);
-    const data = await response.json();
-    dispatch({ type: "FETCH_PRODUCTS_BY_SALT_SUCCESS", payload: data });
-  } catch (error) {
-    dispatch({ type: "FETCH_PRODUCTS_BY_SALT_FAILURE", error });
-    throw error;
-  }
-};
-
-
-export const findProductById = (reqData) => async (dispatch) => {
-  try {
-    dispatch({ type: FIND_PRODUCT_BY_ID_REQUEST });
-
-    const { data } = await api.get(`/api/products/id/${reqData.productId}`);
-
-    console.log("products by  id : ", data);
-    dispatch({
-      type: FIND_PRODUCT_BY_ID_SUCCESS,
-      payload: data,
-    });
-  } catch (error) {
-    dispatch({
-      type: FIND_PRODUCT_BY_ID_FAILURE,
+      type: GET_PRODUCTS_FAILURE,
       payload:
         error.response && error.response.data.message
           ? error.response.data.message
@@ -107,9 +40,8 @@ export const createProduct = (product) => async (dispatch) => {
   try {
     dispatch({ type: CREATE_PRODUCT_REQUEST });
 
-    const { data } = await api.post(
-      `${API_BASE_URL}/api/admin/products/`,
-      product.data
+    const { data } = await api.post(`/api/admin/products/`,
+      product
     );
 
     dispatch({
@@ -117,7 +49,6 @@ export const createProduct = (product) => async (dispatch) => {
       payload: data,
     });
 
-    console.log("created product ", data);
   } catch (error) {
     dispatch({
       type: CREATE_PRODUCT_FAILURE,
@@ -137,7 +68,7 @@ export const updateProduct = (product) => async (dispatch) => {
       `${API_BASE_URL}/api/admin/products/${product.productId}`,
       product
     );
-    console.log("update product ", data)
+
     dispatch({
       type: UPDATE_PRODUCT_SUCCESS,
       payload: data,
@@ -153,23 +84,17 @@ export const updateProduct = (product) => async (dispatch) => {
   }
 };
 
-export const deleteProduct = (productId) => async (dispatch) => {
-  console.log("delete product action", productId)
+export const deleteProduct = (data) => async (dispatch) => {
   try {
     dispatch({ type: DELETE_PRODUCT_REQUEST });
 
-    let { data } = await api.delete(`/api/admin/products/${productId}`);
-
-    console.log("delete product ", data)
+    await api.delete(`/api/admin/products/${data.productId}`);
 
     dispatch({
       type: DELETE_PRODUCT_SUCCESS,
-      payload: productId,
+      payload: data.productId,
     });
-
-    console.log("product delte ", data)
   } catch (error) {
-    console.log("catch error ", error)
     dispatch({
       type: DELETE_PRODUCT_FAILURE,
       payload:
